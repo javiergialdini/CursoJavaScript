@@ -120,42 +120,6 @@ function quitarDeCarro(id){
     mostrarCarrito(listaLibrosComprar);
 }
 
-function comprar() {
-    do {
-        seleccion = prompt(mensajeIngreso)
-        if(controlOpciones(seleccion, i)){
-            indice=seleccion-1
-            alert(listaLibros[indice].titulo)
-            listaLibrosComprar.push(listaLibros[seleccion])
-        }
-        else if(Number(seleccion) === 0)
-            continue
-        else
-            alert('Debe ingresar una opción correcta')
-    }
-    while (Number(seleccion) != 0)
-
-    do {
-        seleccion = prompt('¿Desea agregar codigo de descuento?\n0) NO\n1) SI')
-        if(controlOpciones(seleccion, 2)) {
-            codDescuento = prompt('Ingrese el código de descuento')
-            validarCodigoDescuento(codDescuento)
-            if(descuento != 1){
-                detalleDeCompra(listaLibrosComprar, descuento)
-                seleccion = 0
-            }
-        }
-        else if(Number(seleccion) == 0) {
-            detalleDeCompra(listaLibrosComprar, 1)
-        }
-        else {
-            alert('Debe ingresar una opción correcta')
-        }
-    }
-    while(Number(seleccion) != 0)
-    listaLibrosComprar = [];
-}
-
 // Metodo para otorgar descuento
 function darDescuento(fecha){
     let hoy = new Date();
