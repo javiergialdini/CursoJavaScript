@@ -5,18 +5,40 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="app.js"></script>
+    <link rel="Stylesheet" href="estilos.css" type="text/css" href="URL">
 </head>
 <body>
-    <nav> VENTA DE LIBROS</nav>
     <div>
-        <h1>CODIGOS DESCUENTOS</h1>
-        <ul>
-            <li>DESC1 10%</li>
-            <li>DESC2 15%</li>
-            <li>DESC3 20%</li>
-            <li>DESC4 25%</li>
-        </ul>
+        <h1 id="titulo"> VENTA DE LIBROS </h1>
     </div>
+    <div>
+        <!--div>
+            <input style="width: 445px;" type="text" class="buscador"/>
+        </div-->
+        <div>filtros</div>
+        <div style="margin-top: 15px;">
+            <button class="btnCategorias" id="todos">TODOS</button>
+            <button class="btnCategorias" id="informatica">INFORMÁTICA</button>
+            <button class="btnCategorias" id="leyes">LEYES</button>
+            <button class="btnCategorias" id="cienciaFic">CIENCIA FICCIÓN</button>
+            <button class="btnCategorias" id="fantasia">FANTASÍA</button>
+        </div>
+        <div>
+            <p>Mostar solo disponibles <input type="checkbox" id="soloStock"/></p>
+        </div>
+    </div>
+    <div id="div1"></div>
+    <div style="margin-top: 15px;">
+        <div>
+            <p id="cantItems">Items en el carro: </p>
+        </div>
+        <div id="contenedorBotones">
+            <button id="btnCarro" class="btnCarro"></button>
+            <button class="obtenerDesc" id="btnDesc"></button>
+            <button class="btnDetalleCompra" id="btnDetalleCompra">DETALLE DE COMPRA</button>
+        </div>
+        <p id="mostrarCodDesc"></p>
+    </div>
+    <script src="app.js"></script>
 </body>
 </html>
