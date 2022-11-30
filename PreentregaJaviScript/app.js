@@ -20,7 +20,7 @@ let listaLibros = [ libro1, libro2, libro3, libro4, libro5, libro6, libro7 ]
 let libros = listaLibros;
 let listaLibrosComprar = [];
 let codigoDescuento;
-let descuento;
+let descuento = 1;
 
 
 // CARGO CAJAS DE LIBROS
