@@ -1,20 +1,21 @@
 class Libro {
-    constructor(id,titulo, genero, precio, stock){
+    constructor(id,titulo, genero, precio, stock, img){
         this.id = id;
         this.titulo = titulo
         this.genero = genero
         this.precio = precio
         this.stock = stock
+        this.img = img
     }
 }
 
-let libro1 = new Libro(1, "JavaScript para principiantes", "Universitario/Informática", 2500, 10)
-let libro2 = new Libro(2, "JAVA Avanzado", "Universitario/Informática", 3800, 0)
-let libro3 = new Libro(3, "Redes", "Universitario/Informática", 6500, 10)
-let libro4 = new Libro(4, "Juego de Tronos", "Fantasía", 1800, 4)
-let libro5 = new Libro(5, "Dune", "Ciencia ficción", 2200, 9)
-let libro6 = new Libro(6, "Soy Leyenda", "Ciencia Ficción/Terror", 1500, 13)
-let libro7 = new Libro(7, "La enseñanza del derecho", "Universitario/Leyes", 4750, 17)
+let libro1 = new Libro(1, "Aprendiendo Javascript", "Universitario/Informática", 2500, 10, "JSCRIPT.jfif")
+let libro2 = new Libro(2, "JAVA para novatos", "Universitario/Informática", 3800, 0, "JAVA.jpg")
+let libro3 = new Libro(3, "Redes Informáticas", "Universitario/Informática", 6500, 10, "REDES.png")
+let libro4 = new Libro(4, "Juego de Tronos", "Fantasía", 1800, 4, "GOT.jpg")
+let libro5 = new Libro(5, "Dune", "Ciencia ficción", 2200, 9, "Dune.jpg")
+let libro6 = new Libro(6, "Soy Leyenda", "Ciencia Ficción/Terror", 1500, 13, "SLEY.jpg")
+let libro7 = new Libro(7, "El derecho Penal Argentino en la historia", "Universitario/Leyes", 4750, 17, "DER.png")
 
 let listaLibros = [ libro1, libro2, libro3, libro4, libro5, libro6, libro7 ]
 let libros = listaLibros;
@@ -22,22 +23,42 @@ let listaLibrosComprar = [];
 let codigoDescuento;
 let descuento = 1;
 
+let totalesCarrito = 0;
+
 
 // CARGO CAJAS DE LIBROS
 const contenedorLibros = document.getElementById("div1")
 mostrarLibros(libros);
 function mostrarLibros(librosMostrar) {
     contenedorLibros.replaceChildren();
+    contenedorLibros.style = "width: 100%;";
+    contenedorLibros.className = "album py-5 bg-light";
+    const contenedor = document.createElement("div");
+    contenedor.className = "container";
+    const row = document.createElement("div");
+    row.className = "row";
+
     librosMostrar.forEach(libro => {
         const div = document.createElement("div");
-        div.className = "caja";
-        div.innerHTML = `<div class="nombreLibro"><p>${libro.titulo}</p></div>
-                        <div><p>Precio: $${libro.precio}</p></div>
-                        <div><button class="btnAgregar" value="${libro.id}" onClick="añadeACarro(${libro.id})"> Añadir al carro </button></div>
-                        <div><p style="font-size: 10px">Género: ${libro.genero}</p></div>
-                        `
-        contenedorLibros.appendChild(div);
+
+        const pathIMG = libro.img != '' ? ("./img/" + libro.img) : "holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail";
+        div.className = "col-md-3";
+        div.innerHTML = `<div class="card mb-4 box-shadow">
+                            <img class="card-img-top" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;" src="${pathIMG}" data-holder-rendered="true">
+                            <div class="card-body">
+                                <p class="card-text">${libro.titulo}</p>
+                                <small class="text-muted">Género: ${libro.genero}</small>
+                                <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" value="${libro.id}" onClick="añadeACarro(${libro.id})">Añadir</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>`
+        row.appendChild(div);
     })
+    contenedor.appendChild(row);
+    contenedorLibros.appendChild(contenedor);
     const btnCarro = document.getElementById("btnCarro");
     btnCarro.innerHTML = "VER CARRO"
     const btnDesc = document.getElementById("btnDesc");
@@ -88,10 +109,39 @@ function mostrarCarrito(listaLibros) {
     }
     else
     {
+        contenedorLibros.style = "width: 50%;";
         listaLibros.forEach(libro => {
         const div = document.createElement("div");
         div.className = "carrito";
-        div.innerHTML = `<ul><li type="disc">${libro.titulo} $${libro.precio} <input type="submit" value="Quitar" onClick="quitarDeCarro(${libro.id})"></li></ul>`;
+        const pathIMG = libro.img != '' ? ("./img/" + libro.img) : "holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail";
+        div.innerHTML = `<table style="width: 100%;">
+                            <tbody>
+                                <tr>
+                                    <td style="padding-left: 10px; width: 1%;">
+                                        <img class="card-img-top" alt="Thumbnail [100%x225]" style="height: 60px; width: 36px; margin-right: 10px;" src="${pathIMG}" data-holder-rendered="true">
+                                    </td>
+                                    <td style="padding-left: 10px; width: 40%; text-align:left;">
+                                        ${libro.titulo}
+                                    </td>
+                                    <td style="padding-left: 10px; width: 1%;">
+                                        $${libro.precio}
+                                    </td>
+                                    <td style="padding-left: 10px; width: 1%;">
+                                        <input type="submit" value="-" style=" width: 35px;" onClick=quitarElemento(${libro.id})>
+                                    </td>
+                                    <td style="padding-left: 2px; width: 1%;">
+                                        <input type="nummber" value="${libro.stock}" style=" width: 35px; text-align: center;">
+                                    </td>
+                                    <td style="padding-left: 2px; width: 1%;">
+                                        <input type="submit" value="+" style=" width: 35px;" onClick="agregarElemento(${libro.id})">
+                                    </td>
+                                    <td style="padding-left: 10px; width: 1%;">
+                                        <input type="submit" value="Quitar" onClick="quitarLista(${libro.id})">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <hr>`;
         contenedorLibros.appendChild(div);
         })
     }
@@ -104,19 +154,52 @@ function mostrarCarrito(listaLibros) {
 // AÑADO LIBRO AL CARRO
 function añadeACarro(id){
     if(listaLibros.find(libro => libro.id === id).stock > 0){
-        listaLibrosComprar.push(listaLibros.find(libro => libro.id === id))
-        document.getElementById("cantItems").innerHTML = `Items en el carro: ${listaLibrosComprar.length}`;
+        let index = listaLibros.find(libro => libro.id === id).id.toString();
+        const libroLista = listaLibrosComprar.find(libro => libro.id === id);
+
+        if(listaLibrosComprar.find(libro => libro.id === id) === undefined){
+            let libroAdd = listaLibros.find(libro => libro.id === id);
+            libroAdd.stock = 1;
+            listaLibrosComprar.push(libroAdd);
+        } else {
+            listaLibrosComprar.find(libro => libro.id === id).stock ++;
+        }
+
+        localStorage.setItem("carritoLibros", listaLibrosComprar);
+        totalesCarrito++;
+        document.getElementById("cantItems").innerHTML = `Items en el carro: ${totalesCarrito}`;
+        //book = localStorage.getItem("carritoLibros")
+        //console.log(book, typeof book)
+        //let libroObjeto = JSON.parse(book)
+        //console.log(libroObjeto, typeof libroObjeto)
     }
     else {
         alert("Lo sentimos. Ya no quedan disponibles :(")
     }
 }
 
-// QUITO DEL CARRO
-function quitarDeCarro(id){
+// QUITO LISTA DEL CARRO
+function quitarLista(id){
     const index = listaLibrosComprar.map( libro => libro.id).indexOf(id);
+    totalesCarrito -= listaLibrosComprar.map( libro => libro.id).stock;
     listaLibrosComprar.splice(index, 1);
-    document.getElementById("cantItems").innerHTML = `Items en el carro: ${listaLibrosComprar.length}`;
+    document.getElementById("cantItems").innerHTML = `Items en el carro: ${totalesCarrito}`;
+    mostrarCarrito(listaLibrosComprar);
+}
+
+// QUITO ELEMENTO DEL CARRO
+function quitarElemento(id){
+    listaLibrosComprar.find(libro => libro.id === id).stock --;
+    totalesCarrito --;
+    document.getElementById("cantItems").innerHTML = `Items en el carro: ${totalesCarrito}`;
+    mostrarCarrito(listaLibrosComprar);
+}
+
+// AGREGO ELEMENTO AL CARRO
+function agregarElemento(id){
+    listaLibrosComprar.find(libro => libro.id === id).stock ++;
+    totalesCarrito ++;
+    document.getElementById("cantItems").innerHTML = `Items en el carro: ${totalesCarrito}`;
     mostrarCarrito(listaLibrosComprar);
 }
 
@@ -211,8 +294,9 @@ function detalleDeCompra(listaLibrosCompra, descuento) {
     mensajeDetalleCompra += (i+1).toString() + ") "
     mensajeDetalleCompra += libro.titulo + " - "
     mensajeDetalleCompra += libro.genero + " - $"
-    mensajeDetalleCompra += libro.precio + "\n"
-    total += Number(libro.precio)
+    mensajeDetalleCompra += libro.precio + " x "
+    mensajeDetalleCompra += libro.stock + "\n"
+    total += Number(libro.precio*libro.stock)
     i++
     })
     mensajeDetalleCompra += "TOTAL $"+total
