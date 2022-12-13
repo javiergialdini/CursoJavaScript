@@ -181,7 +181,7 @@ function añadeACarro(id){
 // QUITO LISTA DEL CARRO
 function quitarLista(id){
     const index = listaLibrosComprar.map( libro => libro.id).indexOf(id);
-    totalesCarrito -= listaLibrosComprar.map( libro => libro.id).stock;
+    totalesCarrito -= listaLibrosComprar.find(libro => libro.id === id).stock;
     listaLibrosComprar.splice(index, 1);
     document.getElementById("cantItems").innerHTML = `Items en el carro: ${totalesCarrito}`;
     mostrarCarrito(listaLibrosComprar);
