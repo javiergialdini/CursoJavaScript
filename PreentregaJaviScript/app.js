@@ -13,7 +13,7 @@ let libro1 = new Libro(1, "Aprendiendo Javascript", "Universitario/Informática"
 let libro2 = new Libro(2, "JAVA para novatos", "Universitario/Informática", 3800, 0, "JAVA.jpg")
 let libro3 = new Libro(3, "Redes Informáticas", "Universitario/Informática", 6500, 10, "REDES.png")
 let libro4 = new Libro(4, "Juego de Tronos", "Fantasía", 1800, 4, "GOT.jpg")
-let libro5 = new Libro(5, "Dune", "Ciencia ficción", 2200, 9, "Dune.jpg")
+let libro5 = new Libro(5, "Dune", "Ciencia Ficción", 2200, 9, "Dune.jpg")
 let libro6 = new Libro(6, "Soy Leyenda", "Ciencia Ficción/Terror", 1500, 13, "SLEY.jpg")
 let libro7 = new Libro(7, "El derecho Penal Argentino en la historia", "Universitario/Leyes", 4750, 17, "DER.png")
 
@@ -24,6 +24,9 @@ let codigoDescuento;
 let descuento = 1;
 
 let totalesCarrito = 0;
+let listaGenerosLimpia = [];
+
+
 
 
 // CARGO CAJAS DE LIBROS
@@ -40,17 +43,17 @@ function mostrarLibros(librosMostrar) {
 
     librosMostrar.forEach(libro => {
         const div = document.createElement("div");
-
+        const disabled = libro.stock === 0 ? "disabled" : "";
         const pathIMG = libro.img != '' ? ("./img/" + libro.img) : "holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail";
         div.className = "col-md-3";
         div.innerHTML = `<div class="card mb-4 box-shadow">
-                            <img class="card-img-top" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;" src="${pathIMG}" data-holder-rendered="true">
+                            <img class="card-img-top" alt="Thumbnail [100%x225]" style="height: 225px; width: 75%; display: block; margin: auto;" src="${pathIMG}" data-holder-rendered="true">
                             <div class="card-body">
-                                <p class="card-text">${libro.titulo}</p>
-                                <small class="text-muted">Género: ${libro.genero}</small>
+                                <p class="card-text" style="width: 100%; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${libro.titulo}</p>
+                                <p class="text-muted" style="font-size: 12px; width: 100%; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${libro.genero}</small>
                                 <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary" value="${libro.id}" onClick="añadeACarro(${libro.id})">Añadir</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" value="${libro.id}" onClick="añadeACarro(${libro.id})" ${disabled}>Añadir</button>
                                 </div>
                                 </div>
                             </div>
@@ -65,6 +68,12 @@ function mostrarLibros(librosMostrar) {
     btnDesc.innerHTML = "OBTENER CODIGO DESCUENTO"
 }
 
+
+
+
+
+//    **********   CARRITO   ******
+
 // AGREGO EVENTO AL BOTON CARRO
 const btnCarro = document.getElementById("btnCarro");
 btnCarro.onclick = () => {
@@ -72,30 +81,6 @@ btnCarro.onclick = () => {
         mostrarCarrito(listaLibrosComprar);
     else
         mostrarLibros(listaLibros);
-}
-
-// AGREGO EVENTO AL BOTON OBTENER DESCUENTOS
-const btnDesc = document.getElementById("btnDesc");
-btnDesc.onclick = () => {
-    if(btnDesc.innerHTML == "OBTENER CODIGO DESCUENTO"){
-        const result = prompt("Ingrese día y mes de su cumpleaños\n(dd/mm)");
-        darDescuento(result);
-    }
-    else{
-        codigoDescuento = "";
-        let result = prompt("Ingrese código");
-        validarCodigoDescuento(result);
-        if(descuento != 1)
-            document.getElementById("mostrarCodDesc").innerHTML = `Código de descuento ingresado: ${result}`;
-        else
-            document.getElementById("mostrarCodDesc").innerHTML = `Sin descuento`;
-    }
-}
-
-// AGREGO EVENTO A BOTON DETALLE DE COMPRA
-const btnDetalle = document.getElementById("btnDetalleCompra");
-btnDetalle.onclick = () => {
-    detalleDeCompra(listaLibrosComprar, descuento)
 }
 
 // CARGO LISTA DE CARRITO CON LIBROS AGREGADOS
@@ -168,10 +153,6 @@ function añadeACarro(id){
         localStorage.setItem("carritoLibros", listaLibrosComprar);
         totalesCarrito++;
         document.getElementById("cantItems").innerHTML = `Items en el carro: ${totalesCarrito}`;
-        //book = localStorage.getItem("carritoLibros")
-        //console.log(book, typeof book)
-        //let libroObjeto = JSON.parse(book)
-        //console.log(libroObjeto, typeof libroObjeto)
     }
     else {
         alert("Lo sentimos. Ya no quedan disponibles :(")
@@ -203,7 +184,31 @@ function agregarElemento(id){
     mostrarCarrito(listaLibrosComprar);
 }
 
-// Metodo para otorgar descuento
+
+
+
+
+//   ***********  Otorgar descuentos  ***********t
+
+// AGREGO EVENTO AL BOTON OBTENER DESCUENTOS
+const btnDesc = document.getElementById("btnDesc");
+btnDesc.onclick = () => {
+    if(btnDesc.innerHTML == "OBTENER CODIGO DESCUENTO"){
+        const result = prompt("Ingrese día y mes de su cumpleaños\n(dd/mm)");
+        darDescuento(result);
+    }
+    else{
+        codigoDescuento = "";
+        let result = prompt("Ingrese código");
+        validarCodigoDescuento(result);
+        if(descuento != 1)
+            document.getElementById("mostrarCodDesc").innerHTML = `Código de descuento ingresado: ${result}`;
+        else
+            document.getElementById("mostrarCodDesc").innerHTML = `Sin descuento`;
+    }
+}
+
+// Meodo para otorgar descuento
 function darDescuento(fecha){
     let hoy = new Date();
     let mes = (hoy.getMonth()+1)
@@ -285,6 +290,14 @@ function validarCodigoDescuento (codigo) {
     }
 }
 
+// *************** DETEALLE DE COMPRA ****************
+// AGREGO EVENTO A BOTON DETALLE DE COMPRA
+const btnDetalle = document.getElementById("btnDetalleCompra");
+btnDetalle.onclick = () => {
+    detalleDeCompra(listaLibrosComprar, descuento)
+}
+
+
 // Genero el detalle de la compra
 function detalleDeCompra(listaLibrosCompra, descuento) {
     let i=0;
@@ -306,53 +319,50 @@ function detalleDeCompra(listaLibrosCompra, descuento) {
 }
 
 
-// Aplico filtro por género y si verifica stock
-function filtrado(genero, hayStock) {
-    if(genero === "todos"){
-        let librosFiltrados = listaLibros.filter(libro => libro.stock >= hayStock);
-        return librosFiltrados;
-    }
-    else{
-        let librosFiltrados = listaLibros.filter(libro => libro.genero === genero && libro.stock >= hayStock);
-        return librosFiltrados;
-    }
+
+//   **********  CARGO BOTONES DE FILTRO      *********
+const contenedorFiltros = document.getElementById("btnsFiltro")
+obtenerGenero(libros)
+function obtenerGenero(libros) {
+    const listaGeneros = [];
+    libros.forEach(libro => {
+        if(libro.genero.includes("/")){
+            const subGeneros = libro.genero.split("/");
+            subGeneros.forEach( gen => {
+                listaGeneros.push(gen);
+            })
+        } else {
+            listaGeneros.push(libro.genero);
+        }
+    })
+
+    listaGenerosLimpia = [...new Set(listaGeneros)];
+    cargarBotonesFiltro(listaGenerosLimpia);
+}
+
+function cargarBotonesFiltro(listaFiltros) {
+    const button = document.createElement("button");
+    button.className = "btn btn-sm btn-outline-secondary m-1";
+    button.id = "todos";
+    button.innerHTML = "Todos";
+    button.addEventListener("click", aplicarFiltro.bind(null, "todos"));
+    contenedorFiltros.appendChild(button);
+    listaGenerosLimpia.forEach( genero => {
+        const button = document.createElement("button");
+        button.className = "btn btn-sm btn-outline-secondary m-1";
+        button.id = genero;
+        button.innerHTML = genero;
+        button.addEventListener("click", aplicarFiltro.bind(null, genero));
+        contenedorFiltros.appendChild(button);
+    })
 }
 
 // AGREGO EVENTO A BOTONES DE FILTRO CATEGORIAS
 let filtro = "todos";
 
-const btnTodos = document.getElementById("todos");
-btnTodos.onclick = () => {
-    filtro = "todos";
-    libros = filtrado(filtro, (document.getElementById("soloStock").checked ? 1:0));
-    mostrarLibros(libros);
-}
-
-const btnInformatica = document.getElementById("informatica");
-btnInformatica.onclick = () => {
-    filtro = "Universitario/Informática";
-    libros = filtrado(filtro, (document.getElementById("soloStock").checked ? 1:0));
-    mostrarLibros(libros);
-}
-
-const btnLeyes = document.getElementById("leyes");
-btnLeyes.onclick = () => {
-    filtro = "Universitario/Leyes";
-    libros = filtrado(filtro, (document.getElementById("soloStock").checked ? 1:0));
-    mostrarLibros(libros);
-}
-
-const btnCienciaFic = document.getElementById("cienciaFic");
-btnCienciaFic.onclick = () => {
-    filtro = "Ciencia ficción";
-    libros = filtrado(filtro, (document.getElementById("soloStock").checked ? 1:0));
-    mostrarLibros(libros);
-}
-
-const btnFantasia = document.getElementById("fantasia");
-btnFantasia.onclick = () => {
-    filtro = "Fantasía";
-    libros = filtrado(filtro, (document.getElementById("soloStock").checked ? 1:0));
+function aplicarFiltro(genero) {
+    filtro = genero;
+    libros = filtrado(genero, (document.getElementById("soloStock").checked ? 1:0));
     mostrarLibros(libros);
 }
 
@@ -361,4 +371,18 @@ const checkStock = document.getElementById("soloStock");
 checkStock.onclick = () => {
     libros = filtrado(filtro, (document.getElementById("soloStock").checked ? 1:0));
     mostrarLibros(libros)
+}
+
+// Aplico filtro por género y si verifica stock
+function filtrado(genero, hayStock) {
+    if(genero === "todos"){
+        console.log("entra todos");
+        let librosFiltrados = listaLibros.filter(libro => libro.stock >= hayStock);
+        return librosFiltrados;
+    }
+    else{
+        console.log("entra otros");
+        let librosFiltrados = listaLibros.filter(libro => libro.genero.includes(genero) && libro.stock >= hayStock);
+        return librosFiltrados;
+    }
 }
