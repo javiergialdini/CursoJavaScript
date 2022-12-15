@@ -50,6 +50,7 @@ function mostrarLibros(librosMostrar) {
                             <img class="card-img-top" alt="Thumbnail [100%x225]" style="height: 225px; width: 75%; display: block; margin: auto;" src="${pathIMG}" data-holder-rendered="true">
                             <div class="card-body">
                                 <p class="card-text" style="width: 100%; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${libro.titulo}</p>
+                                <p class="text-muted" style="font-size: 16px; width: 100%; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">$ ${libro.precio}</small>
                                 <p class="text-muted" style="font-size: 12px; width: 100%; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${libro.genero}</small>
                                 <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
