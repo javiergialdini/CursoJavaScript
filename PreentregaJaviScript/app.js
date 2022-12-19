@@ -27,6 +27,14 @@ let totalesCarrito = 0;
 let listaGenerosLimpia = [];
 
 
+listaLibrosComprarJson = localStorage.getItem("carritoLibros")
+if(listaLibrosComprarJson != null) {
+    listaLibrosComprar = JSON.parse(listaLibrosComprarJson);
+    listaLibrosComprar.forEach(libro => {
+        totalesCarrito += libro.stock;
+        document.getElementById("cantItems").innerHTML = `Items en el carro: ${totalesCarrito}`;
+    })
+}
 
 
 // CARGO CAJAS DE LIBROS
@@ -65,8 +73,8 @@ function mostrarLibros(librosMostrar) {
     contenedorLibros.appendChild(contenedor);
     const btnCarro = document.getElementById("btnCarro");
     btnCarro.innerHTML = "VER CARRO"
-    const btnDesc = document.getElementById("btnDesc");
-    btnDesc.innerHTML = "OBTENER CODIGO DESCUENTO"
+    //const btnDesc = document.getElementById("btnDesc");
+    //btnDesc.innerHTML = "OBTENER CODIGO DESCUENTO"
 }
 
 
@@ -85,9 +93,9 @@ btnCarro.onclick = () => {
 }
 
 // CARGO LISTA DE CARRITO CON LIBROS AGREGADOS
-function mostrarCarrito(listaLibros) {
+function mostrarCarrito(listaLibrosComprar) {
     contenedorLibros.replaceChildren();
-    if(listaLibros == "") {
+    if(listaLibrosComprar == "") {
         const div = document.createElement("div");
         div.className = "carrito";
         div.innerHTML = `<h2> Aún no agregó ningún libro al carro </h2>`;
@@ -96,7 +104,11 @@ function mostrarCarrito(listaLibros) {
     else
     {
         contenedorLibros.style = "width: 50%;";
-        listaLibros.forEach(libro => {
+        listaLibrosComprar.forEach(libro => {
+        const disabledBtnMenos = libro.stock === 0 ? "disabled" : "";
+        const disabledBtnMas = listaLibros.find(libroLista => libroLista.id === libro.id).stock === libro.stock ? "disabled": "";
+
+
         const div = document.createElement("div");
         div.className = "carrito";
         const pathIMG = libro.img != '' ? ("./img/" + libro.img) : "holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail";
@@ -113,13 +125,13 @@ function mostrarCarrito(listaLibros) {
                                         $${libro.precio}
                                     </td>
                                     <td style="padding-left: 10px; width: 1%;">
-                                        <input type="submit" value="-" style=" width: 35px;" onClick=quitarElemento(${libro.id})>
+                                        <input id="btnMenos" type="submit" value="-" style=" width: 35px;" onClick=quitarElemento(${libro.id}) ${disabledBtnMenos}>
                                     </td>
                                     <td style="padding-left: 2px; width: 1%;">
                                         <input type="nummber" value="${libro.stock}" style=" width: 35px; text-align: center;">
                                     </td>
                                     <td style="padding-left: 2px; width: 1%;">
-                                        <input type="submit" value="+" style=" width: 35px;" onClick="agregarElemento(${libro.id})">
+                                        <input id="btnMas" type="submit" value="+" style=" width: 35px;" onClick="agregarElemento(${libro.id})" ${disabledBtnMas}>
                                     </td>
                                     <td style="padding-left: 10px; width: 1%;">
                                         <input type="submit" value="Quitar" onClick="quitarLista(${libro.id})">
@@ -133,30 +145,28 @@ function mostrarCarrito(listaLibros) {
     }
     const btnCarro = document.getElementById("btnCarro");
     btnCarro.innerHTML = "VOLVER"
-    const btnDesc = document.getElementById("btnDesc");
-    btnDesc.innerHTML = "AGREGAR CÓDIGO DESCUENTO"
+    //const btnDesc = document.getElementById("btnDesc");
+    //btnDesc.innerHTML = "AGREGAR CÓDIGO DESCUENTO"
 }
 
 // AÑADO LIBRO AL CARRO
 function añadeACarro(id){
     if(listaLibros.find(libro => libro.id === id).stock > 0){
-        let index = listaLibros.find(libro => libro.id === id).id.toString();
         const libroLista = listaLibrosComprar.find(libro => libro.id === id);
 
         if(listaLibrosComprar.find(libro => libro.id === id) === undefined){
-            let libroAdd = listaLibros.find(libro => libro.id === id);
-            libroAdd.stock = 1;
+            const libroAux = listaLibros.find(libro => libro.id === id);
+            const libroAdd = new Libro(libroAux.id, libroAux.titulo, libroAux.genero, libroAux.precio, 1, libroAux.img); 
             listaLibrosComprar.push(libroAdd);
         } else {
             listaLibrosComprar.find(libro => libro.id === id).stock ++;
         }
 
-        localStorage.setItem("carritoLibros", listaLibrosComprar);
+        const librosStorage = JSON.stringify(listaLibrosComprar);
+        localStorage.setItem("carritoLibros", librosStorage);
+
         totalesCarrito++;
         document.getElementById("cantItems").innerHTML = `Items en el carro: ${totalesCarrito}`;
-    }
-    else {
-        alert("Lo sentimos. Ya no quedan disponibles :(")
     }
 }
 
@@ -166,6 +176,10 @@ function quitarLista(id){
     totalesCarrito -= listaLibrosComprar.find(libro => libro.id === id).stock;
     listaLibrosComprar.splice(index, 1);
     document.getElementById("cantItems").innerHTML = `Items en el carro: ${totalesCarrito}`;
+
+    const librosStorage = JSON.stringify(listaLibrosComprar);
+    localStorage.setItem("carritoLibros", librosStorage);
+
     mostrarCarrito(listaLibrosComprar);
 }
 
@@ -174,6 +188,10 @@ function quitarElemento(id){
     listaLibrosComprar.find(libro => libro.id === id).stock --;
     totalesCarrito --;
     document.getElementById("cantItems").innerHTML = `Items en el carro: ${totalesCarrito}`;
+
+    const librosStorage = JSON.stringify(listaLibrosComprar);
+    localStorage.setItem("carritoLibros", librosStorage);
+
     mostrarCarrito(listaLibrosComprar);
 }
 
@@ -182,6 +200,10 @@ function agregarElemento(id){
     listaLibrosComprar.find(libro => libro.id === id).stock ++;
     totalesCarrito ++;
     document.getElementById("cantItems").innerHTML = `Items en el carro: ${totalesCarrito}`;
+
+    const librosStorage = JSON.stringify(listaLibrosComprar);
+    localStorage.setItem("carritoLibros", librosStorage);
+
     mostrarCarrito(listaLibrosComprar);
 }
 
@@ -191,7 +213,8 @@ function agregarElemento(id){
 
 //   ***********  Otorgar descuentos  ***********t
 
-// AGREGO EVENTO AL BOTON OBTENER DESCUENTOS
+// AGREGO EVENTO AL BOTON OBTENER DESCUENTOS 
+/*
 const btnDesc = document.getElementById("btnDesc");
 btnDesc.onclick = () => {
     if(btnDesc.innerHTML == "OBTENER CODIGO DESCUENTO"){
@@ -207,7 +230,7 @@ btnDesc.onclick = () => {
         else
             document.getElementById("mostrarCodDesc").innerHTML = `Sin descuento`;
     }
-}
+}*/
 
 // Meodo para otorgar descuento
 function darDescuento(fecha){
@@ -293,10 +316,11 @@ function validarCodigoDescuento (codigo) {
 
 // *************** DETEALLE DE COMPRA ****************
 // AGREGO EVENTO A BOTON DETALLE DE COMPRA
+/*
 const btnDetalle = document.getElementById("btnDetalleCompra");
 btnDetalle.onclick = () => {
     detalleDeCompra(listaLibrosComprar, descuento)
-}
+}*/
 
 
 // Genero el detalle de la compra
