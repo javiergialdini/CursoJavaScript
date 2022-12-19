@@ -86,14 +86,18 @@ function mostrarLibros(librosMostrar) {
 // AGREGO EVENTO AL BOTON CARRO
 const btnCarro = document.getElementById("btnCarro");
 btnCarro.onclick = () => {
-    if(btnCarro.innerHTML === "VER CARRO")
+    if(btnCarro.innerHTML === "VER CARRO"){
         mostrarCarrito(listaLibrosComprar);
-    else
+    }
+    else {
+        cargarBotonesFiltro(listaGenerosLimpia);
         mostrarLibros(listaLibros);
+    }
 }
 
 // CARGO LISTA DE CARRITO CON LIBROS AGREGADOS
 function mostrarCarrito(listaLibrosComprar) {
+    contenedorFiltros.replaceChildren();
     contenedorLibros.replaceChildren();
     if(listaLibrosComprar == "") {
         const div = document.createElement("div");
@@ -401,12 +405,10 @@ checkStock.onclick = () => {
 // Aplico filtro por género y si verifica stock
 function filtrado(genero, hayStock) {
     if(genero === "todos"){
-        console.log("entra todos");
         let librosFiltrados = listaLibros.filter(libro => libro.stock >= hayStock);
         return librosFiltrados;
     }
     else{
-        console.log("entra otros");
         let librosFiltrados = listaLibros.filter(libro => libro.genero.includes(genero) && libro.stock >= hayStock);
         return librosFiltrados;
     }
