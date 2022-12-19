@@ -86,10 +86,18 @@ function mostrarLibros(librosMostrar) {
 // AGREGO EVENTO AL BOTON CARRO
 const btnCarro = document.getElementById("btnCarro");
 btnCarro.onclick = () => {
+    const checkFiltro = document.getElementById("divCheckDispo")
     if(btnCarro.innerHTML === "VER CARRO"){
+        checkFiltro.replaceChildren();
+        checkFiltro.innerHTML = '<p>Elementos añadidos al carro: </p>'
         mostrarCarrito(listaLibrosComprar);
     }
     else {
+        checkFiltro.innerHTML = '<p>Mostar solo disponibles <input type="checkbox" id="soloStock"/></p>'
+        checkFiltro.onclick = () => {
+            libros = filtrado(filtro, (document.getElementById("soloStock").checked ? 1:0));
+            mostrarLibros(libros)
+        }
         cargarBotonesFiltro(listaGenerosLimpia);
         mostrarLibros(listaLibros);
     }
