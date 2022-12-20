@@ -146,7 +146,7 @@ function mostrarCarrito(listaLibrosComprar) {
                                         <input id="btnMas" type="submit" value="+" style=" width: 35px;" onClick="agregarElemento(${libro.id})" ${disabledBtnMas}>
                                     </td>
                                     <td style="padding-left: 10px; width: 1%;">
-                                        <input type="submit" value="Quitar" onClick="quitarLista(${libro.id})">
+                                        <input type="submit" value="Quitar" onClick="confirmarEliminar(${libro.id})">
                                     </td>
                                 </tr>
                             </tbody>
@@ -178,8 +178,32 @@ function añadeACarro(id){
         localStorage.setItem("carritoLibros", librosStorage);
 
         totalesCarrito++;
+        Toastify({
+            text: "Se añade al carro",
+            gravity: "bottom",
+            position: "right",
+            style:{
+                background: "#999999"
+            }
+        }).showToast();
         document.getElementById("cantItems").innerHTML = `Items en el carro: ${totalesCarrito}`;
     }
+}
+
+function confirmarEliminar(id) {
+    const libroBorrar = listaLibrosComprar.find(libro => libro.id === id);
+    Swal.fire({
+        title: `¿Está seguro que desea eliminar "${libroBorrar.titulo}" del carrito?`,
+        text: `Cantidad del mismo en el carrito: ${libroBorrar.stock}`,
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+        showCancelButton: true,
+        calcelButtonText: "Cancelar"
+    }).then((result) => {
+        if(result.isConfirmed) {
+            quitarLista(id)
+        }
+    })
 }
 
 // QUITO LISTA DEL CARRO
