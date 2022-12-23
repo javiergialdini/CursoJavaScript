@@ -11,7 +11,6 @@ class Libro {
 
 
 let listaLibros;
-let libros;
 let listaLibrosComprar = [];
 let codigoDescuento;
 let descuento = 1;
@@ -41,9 +40,8 @@ fetch("./jsonLibros.json")
     })
     .catch( error => console.log(error))
     .finally( () => {
-        libros = listaLibros;
-        mostrarLibros(libros);
-        obtenerGenero(libros);
+        mostrarLibros(listaLibros);
+        obtenerGenero(listaLibros);
     })
 
 function mostrarLibros(librosMostrar) {
@@ -124,7 +122,8 @@ function mostrarCarrito(listaLibrosComprar) {
         contenedorLibros.style = "width: 50%;";
         listaLibrosComprar.forEach(libro => {
         const disabledBtnMenos = libro.stock === 0 ? "disabled" : "";
-        const disabledBtnMas = listaLibros.find(libroLista => libroLista.id === libro.id).stock === libro.stock ? "disabled": "";
+        listaLibros.find(libro => libro.id === libro.id).stock === 0;
+        const disabledBtnMas = listaLibros.find(libroLista => libroLista.id === libro.id).stock === 0 ? "disabled": "";
 
 
         const div = document.createElement("div");
@@ -171,6 +170,7 @@ function mostrarCarrito(listaLibrosComprar) {
 function añadeACarro(id){
     const stock = listaLibros.find(libro => libro.id === id).stock;
     if(stock > 0){
+        listaLibros.find(libro => libro.id === id).stock --;
         const libroLista = listaLibrosComprar.find(libro => libro.id === id);
 
         if(listaLibrosComprar.find(libro => libro.id === id) === undefined){
@@ -194,6 +194,7 @@ function añadeACarro(id){
             }
         }).showToast();
         document.getElementById("cantItems").innerHTML = `Items en el carro: ${totalesCarrito}`;
+        mostrarLibros(listaLibros);
     }
 }
 
@@ -216,7 +217,9 @@ function confirmarEliminar(id) {
 // QUITO LISTA DEL CARRO
 function quitarLista(id){
     const index = listaLibrosComprar.map( libro => libro.id).indexOf(id);
-    totalesCarrito -= listaLibrosComprar.find(libro => libro.id === id).stock;
+    const stockLibroCarrito = listaLibrosComprar.find(libro => libro.id === id).stock;
+    listaLibros.find(libro => libro.id === id).stock += stockLibroCarrito;
+    totalesCarrito -= stockLibroCarrito;
     listaLibrosComprar.splice(index, 1);
     document.getElementById("cantItems").innerHTML = `Items en el carro: ${totalesCarrito}`;
 
@@ -228,6 +231,7 @@ function quitarLista(id){
 
 // QUITO ELEMENTO DEL CARRO
 function quitarElemento(id){
+    listaLibros.find(libro => libro.id === id).stock ++;
     listaLibrosComprar.find(libro => libro.id === id).stock --;
     totalesCarrito --;
     document.getElementById("cantItems").innerHTML = `Items en el carro: ${totalesCarrito}`;
@@ -240,6 +244,7 @@ function quitarElemento(id){
 
 // AGREGO ELEMENTO AL CARRO
 function agregarElemento(id){
+    listaLibros.find(libro => libro.id === id).stock --;
     listaLibrosComprar.find(libro => libro.id === id).stock ++;
     totalesCarrito ++;
     document.getElementById("cantItems").innerHTML = `Items en el carro: ${totalesCarrito}`;
