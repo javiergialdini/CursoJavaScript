@@ -9,16 +9,9 @@ class Libro {
     }
 }
 
-let libro1 = new Libro(1, "Aprendiendo Javascript", "Universitario/Informática", 2500, 10, "JSCRIPT.jfif")
-let libro2 = new Libro(2, "JAVA para novatos", "Universitario/Informática", 3800, 0, "JAVA.jpg")
-let libro3 = new Libro(3, "Redes Informáticas", "Universitario/Informática", 6500, 10, "REDES.png")
-let libro4 = new Libro(4, "Juego de Tronos", "Fantasía", 1800, 4, "GOT.jpg")
-let libro5 = new Libro(5, "Dune", "Ciencia Ficción", 2200, 9, "Dune.jpg")
-let libro6 = new Libro(6, "Soy Leyenda", "Ciencia Ficción/Terror", 1500, 13, "SLEY.jpg")
-let libro7 = new Libro(7, "El derecho Penal Argentino en la historia", "Universitario/Leyes", 4750, 17, "DER.png")
 
-let listaLibros = [ libro1, libro2, libro3, libro4, libro5, libro6, libro7 ]
-let libros = listaLibros;
+let listaLibros;
+let libros;
 let listaLibrosComprar = [];
 let codigoDescuento;
 let descuento = 1;
@@ -39,7 +32,20 @@ if(listaLibrosComprarJson != null) {
 
 // CARGO CAJAS DE LIBROS
 const contenedorLibros = document.getElementById("div1")
-mostrarLibros(libros);
+
+
+fetch("./jsonLibros.json")
+    .then(respuesta => respuesta.json())
+    .then( datos => {
+        listaLibros = datos;
+    })
+    .catch( error => console.log(error))
+    .finally( () => {
+        libros = listaLibros;
+        mostrarLibros(libros);
+        obtenerGenero(libros);
+    })
+
 function mostrarLibros(librosMostrar) {
     contenedorLibros.replaceChildren();
     contenedorLibros.style = "width: 100%;";
@@ -163,7 +169,8 @@ function mostrarCarrito(listaLibrosComprar) {
 
 // AÑADO LIBRO AL CARRO
 function añadeACarro(id){
-    if(listaLibros.find(libro => libro.id === id).stock > 0){
+    const stock = listaLibros.find(libro => libro.id === id).stock;
+    if(stock > 0){
         const libroLista = listaLibrosComprar.find(libro => libro.id === id);
 
         if(listaLibrosComprar.find(libro => libro.id === id) === undefined){
@@ -341,12 +348,13 @@ function validarFecha(dia, mes) {
 
 // Valido el codigo de descuento ingresado
 function validarCodigoDescuento (codigo) {
+    codigoDescuento = codigo;
     switch(codigo){
-        case 'DESC1': descuento = 0.90; codigoDescuento = 'DESC1'; break;
-        case 'DESC2': descuento = 0.85; codigoDescuento = 'DESC2';break;
-        case 'DESC3': descuento = 0.80; codigoDescuento = 'DESC3';break;
-        case 'DESC4': descuento = 0.75; codigoDescuento = 'DESC4';break;
-        default: alert('Código incorrecto'); descuento = 1;
+        case 'DESC1': descuento = 0.90; break;
+        case 'DESC2': descuento = 0.85; break;
+        case 'DESC3': descuento = 0.80; break;
+        case 'DESC4': descuento = 0.75; break;
+        default: descuento = 1;
     }
 }
 
@@ -383,7 +391,6 @@ function detalleDeCompra(listaLibrosCompra, descuento) {
 
 //   **********  CARGO BOTONES DE FILTRO      *********
 const contenedorFiltros = document.getElementById("btnsFiltro")
-obtenerGenero(libros)
 function obtenerGenero(libros) {
     const listaGeneros = [];
     libros.forEach(libro => {
@@ -436,12 +443,13 @@ checkStock.onclick = () => {
 
 // Aplico filtro por género y si verifica stock
 function filtrado(genero, hayStock) {
+    let librosFiltrados
     if(genero === "todos"){
-        let librosFiltrados = listaLibros.filter(libro => libro.stock >= hayStock);
+        librosFiltrados = listaLibros.filter(libro => libro.stock >= hayStock);
         return librosFiltrados;
     }
     else{
-        let librosFiltrados = listaLibros.filter(libro => libro.genero.includes(genero) && libro.stock >= hayStock);
+        librosFiltrados = listaLibros.filter(libro => libro.genero.includes(genero) && libro.stock >= hayStock);
         return librosFiltrados;
     }
 }
