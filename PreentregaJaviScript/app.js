@@ -75,8 +75,12 @@ function mostrarLibros(librosMostrar) {
     })
     contenedor.appendChild(row);
     contenedorLibros.appendChild(contenedor);
+
     const btnCarro = document.getElementById("btnCarro");
-    btnCarro.innerHTML = "VER CARRO"
+    btnCarro.innerHTML = "VER CARRO";
+
+    const btnDetalleCompra = document.getElementById("btnDetalleCompra");
+    btnDetalleCompra.setAttribute("hidden", true);
     //const btnDesc = document.getElementById("btnDesc");
     //btnDesc.innerHTML = "OBTENER CODIGO DESCUENTO"
 }
@@ -93,7 +97,7 @@ btnCarro.onclick = () => {
     const checkFiltro = document.getElementById("divCheckDispo")
     if(btnCarro.innerHTML === "VER CARRO"){
         checkFiltro.replaceChildren();
-        checkFiltro.innerHTML = '<p>Elementos añadidos al carro: </p>'
+        checkFiltro.innerHTML = '<p class="margenIzq">Elementos añadidos al carro: </p>'
         mostrarCarrito(listaLibrosComprar);
     }
     else {
@@ -114,12 +118,15 @@ function mostrarCarrito(listaLibrosComprar) {
     if(listaLibrosComprar == "") {
         const div = document.createElement("div");
         div.className = "carrito";
-        div.innerHTML = `<h2> Aún no agregó ningún libro al carro </h2>`;
+        div.innerHTML = `<h2 class="margenIzq"> Aún no agregó ningún libro al carro </h2>`;
         contenedorLibros.appendChild(div);
+
+        const btnDetalleCompra = document.getElementById("btnDetalleCompra");
+        btnDetalleCompra.setAttribute("hidden", true);
     }
     else
     {
-        contenedorLibros.style = "width: 50%;";
+        contenedorLibros.style = "width: 50%; margin-left: 20px;";
         listaLibrosComprar.forEach(libro => {
         const disabledBtnMenos = libro.stock === 0 ? "disabled" : "";
         listaLibros.find(libro => libro.id === libro.id).stock === 0;
@@ -159,12 +166,25 @@ function mostrarCarrito(listaLibrosComprar) {
                         <hr>`;
         contenedorLibros.appendChild(div);
         })
+        const btnDetalleCompra = document.getElementById("btnDetalleCompra");
+        btnDetalleCompra.removeAttribute("hidden");
     }
+
     const btnCarro = document.getElementById("btnCarro");
-    btnCarro.innerHTML = "VOLVER"
-    //const btnDesc = document.getElementById("btnDesc");
-    //btnDesc.innerHTML = "AGREGAR CÓDIGO DESCUENTO"
+    btnCarro.innerHTML = "VOLVER";
+
+    
 }
+
+// EVENTO BOTON DETALLE COMPRA
+
+const btnDetalle = document.getElementById("btnDetalleCompra");
+btnDetalle.onclick = () => {
+    detalleDeCompra(listaLibrosComprar)
+}
+
+
+
 
 // AÑADO LIBRO AL CARRO
 function añadeACarro(id){
@@ -256,124 +276,8 @@ function agregarElemento(id){
 }
 
 
-
-
-
-//   ***********  Otorgar descuentos  ***********t
-
-// AGREGO EVENTO AL BOTON OBTENER DESCUENTOS 
-/*
-const btnDesc = document.getElementById("btnDesc");
-btnDesc.onclick = () => {
-    if(btnDesc.innerHTML == "OBTENER CODIGO DESCUENTO"){
-        const result = prompt("Ingrese día y mes de su cumpleaños\n(dd/mm)");
-        darDescuento(result);
-    }
-    else{
-        codigoDescuento = "";
-        let result = prompt("Ingrese código");
-        validarCodigoDescuento(result);
-        if(descuento != 1)
-            document.getElementById("mostrarCodDesc").innerHTML = `Código de descuento ingresado: ${result}`;
-        else
-            document.getElementById("mostrarCodDesc").innerHTML = `Sin descuento`;
-    }
-}*/
-
-// Meodo para otorgar descuento
-function darDescuento(fecha){
-    let hoy = new Date();
-    let mes = (hoy.getMonth()+1)
-
-    let arr = fecha.split("/");
-    let mesIngresado=arr[1]
-
-    if(fecha.includes("/") && fecha.length < 6){
-        let arr = fecha.split("/");
-        let diaIngresado=arr[0]
-        let mesIngresado=arr[1]
-        if(validarFecha(diaIngresado, mesIngresado))
-            if(mes == mesIngresado){
-                alert("Tu código de descuento es: DESC4")
-            }
-            else{
-                switch(mesIngresado){
-                    case "1":
-                    case "2":
-                    case "3": alert("Tu código de descuento es: DESC1"); break;
-                    case "4":
-                    case "5":
-                    case "6": alert("Tu código de descuento es: DESC3"); break;
-                    case "7":
-                    case "8":
-                    case "9":alert("Tu código de descuento es: DESC4"); break;
-                    case "10":
-                    case "11":
-                    case "12":alert("Tu código de descuento es: DESC2"); break;
-                }
-            }
-        else
-            alert("fecha mal ingresada")
-    }
-    else
-        alert("fecha mal ingresada")
-}
-
-//VALIDO FECHA INGRESADA
-function validarFecha(dia, mes) {
-    if(mes > 0 && mes < 13) {
-        switch(mes){
-            case "1":
-            case "3":
-            case "5":
-            case "7":
-            case "8":
-            case "10":
-            case "12":
-                if(dia > 0 && dia < 32) return true;
-                else return false;
-                break;
-            case "2":
-                if(dia > 0 && dia < 30) return true;
-                else return false;
-                break;
-            case "4":
-            case "6":
-            case "9":
-            case "11":
-                if(dia > 0 && dia < 31) return true;
-                else return false;
-                break;
-        }
-    }
-    else {
-        return false;
-    }
-}
-
-// Valido el codigo de descuento ingresado
-function validarCodigoDescuento (codigo) {
-    codigoDescuento = codigo;
-    switch(codigo){
-        case 'DESC1': descuento = 0.90; break;
-        case 'DESC2': descuento = 0.85; break;
-        case 'DESC3': descuento = 0.80; break;
-        case 'DESC4': descuento = 0.75; break;
-        default: descuento = 1;
-    }
-}
-
-// *************** DETEALLE DE COMPRA ****************
-// AGREGO EVENTO A BOTON DETALLE DE COMPRA
-/*
-const btnDetalle = document.getElementById("btnDetalleCompra");
-btnDetalle.onclick = () => {
-    detalleDeCompra(listaLibrosComprar, descuento)
-}*/
-
-
 // Genero el detalle de la compra
-function detalleDeCompra(listaLibrosCompra, descuento) {
+function detalleDeCompra(listaLibrosCompra) {
     let i=0;
     let total = 0;
     let mensajeDetalleCompra = "DETALLE DE COMPRA\n"
@@ -387,8 +291,6 @@ function detalleDeCompra(listaLibrosCompra, descuento) {
     i++
     })
     mensajeDetalleCompra += "TOTAL $"+total
-    if(descuento!=1)
-    mensajeDetalleCompra += "\nTOTAL CON DESCUENTO "+Math.round((1-Number(descuento))*100).toString()+ "% $"+(total*descuento)
     alert(mensajeDetalleCompra)
 }
 
@@ -415,7 +317,7 @@ function obtenerGenero(libros) {
 
 function cargarBotonesFiltro(listaFiltros) {
     const button = document.createElement("button");
-    button.className = "btn btn-sm btn-outline-secondary m-1";
+    button.className = "btn btn-sm btn-outline-secondary";
     button.id = "todos";
     button.innerHTML = "Todos";
     button.addEventListener("click", aplicarFiltro.bind(null, "todos"));

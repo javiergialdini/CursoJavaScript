@@ -12,7 +12,7 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a style="width: 90%;" class="navbar-brand" href="#">BookStore</a>
+        <a style="width: 90%;" class="margenIzq navbar-brand" href="#">BookStore</a>
         <svg xmlns="http://www.w3.org/2000/svg" style="width: 10%;" width="18" height="18" fill="currentColor" class="bi bi-cart alinearIzq" viewBox="0 0 16 16">
             <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
         </svg>
@@ -21,20 +21,20 @@
         <!--div>
             <input style="width: 445px;" type="text" class="buscador"/>
         </div-->
-        <div style="margin-top: 25px;" id="btnsFiltro"></div>
+        <div style="margin-top: 25px;" class="margenIzq" id="btnsFiltro"></div>
         <div style="margin-top: 10px;" id="divCheckDispo">
-            <p>Mostar solo disponibles <input type="checkbox" id="soloStock"/></p>
+            <p class="margenIzq">Mostar solo disponibles <input type="checkbox" id="soloStock"/></p>
         </div>
     </div>
     <div id="div1"></div>
     <div style="margin-top: 15px;">
         <div>
-            <p id="cantItems">Items en el carro: </p>
+            <p class="margenIzq" id="cantItems">Items en el carro: </p>
         </div>
         <div id="contenedorBotones">
-            <button id="btnCarro" class="btn btn-sm btn-outline-secondary"></button>
+            <button id="btnCarro" class="margenIzq btn btn-sm btn-outline-secondary"></button>
             <!--button class="btn btn-sm btn-outline-secondary" id="btnDesc"></button-->
-            <!--button class="btn btn-sm btn-outline-secondary" id="btnDetalleCompra">DETALLE DE COMPRA</button-->
+            <button class="btn btn-sm btn-outline-secondary margenIzq" id="btnDetalleCompra">DETALLE DE COMPRA</button>
         </div>
         <p id="mostrarCodDesc"></p>
     </div>
