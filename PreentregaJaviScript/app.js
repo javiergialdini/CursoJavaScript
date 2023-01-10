@@ -16,6 +16,7 @@ let codigoDescuento;
 let descuento = 1;
 
 let totalesCarrito = 0;
+let totalPrecioCompra = 0;
 let listaGenerosLimpia = [];
 
 
@@ -31,6 +32,7 @@ if(listaLibrosComprarJson != null) {
 
 // CARGO CAJAS DE LIBROS
 const contenedorLibros = document.getElementById("div1")
+const datosCC = document.getElementById("div2");
 
 
 fetch("./jsonLibros.json")
@@ -45,6 +47,7 @@ fetch("./jsonLibros.json")
     })
 
 function mostrarLibros(librosMostrar) {
+    datosCC.replaceChildren();
     contenedorLibros.replaceChildren();
     contenedorLibros.style = "width: 100%;";
     contenedorLibros.className = "album py-5 bg-light";
@@ -113,6 +116,7 @@ btnCarro.onclick = () => {
 
 // CARGO LISTA DE CARRITO CON LIBROS AGREGADOS
 function mostrarCarrito(listaLibrosComprar) {
+    datosCC.replaceChildren();
     contenedorFiltros.replaceChildren();
     contenedorLibros.replaceChildren();
     if(listaLibrosComprar == "") {
@@ -126,12 +130,13 @@ function mostrarCarrito(listaLibrosComprar) {
     }
     else
     {
-        contenedorLibros.style = "width: 50%; margin-left: 20px;";
+        totalPrecioCompra=0;
+        contenedorLibros.style = "float:left; width: 50%; position: relative;";
         listaLibrosComprar.forEach(libro => {
         const disabledBtnMenos = libro.stock === 0 ? "disabled" : "";
         listaLibros.find(libro => libro.id === libro.id).stock === 0;
         const disabledBtnMas = listaLibros.find(libroLista => libroLista.id === libro.id).stock === 0 ? "disabled": "";
-
+        totalPrecioCompra += libro.precio*libro.stock;
 
         const div = document.createElement("div");
         div.className = "carrito";
@@ -143,10 +148,10 @@ function mostrarCarrito(listaLibrosComprar) {
                                         <img class="card-img-top" alt="Thumbnail [100%x225]" style="height: 60px; width: 36px; margin-right: 10px;" src="${pathIMG}" data-holder-rendered="true">
                                     </td>
                                     <td style="padding-left: 10px; width: 40%; text-align:left;">
-                                        ${libro.titulo}
+                                        ${libro.titulo}<br><p style="font-size: 14px;">$${libro.precio}</p>
                                     </td>
                                     <td style="padding-left: 10px; width: 1%;">
-                                        $${libro.precio}
+                                        $${libro.precio*libro.stock}
                                     </td>
                                     <td style="padding-left: 10px; width: 1%;">
                                         <input id="btnMenos" type="submit" value="-" style=" width: 35px;" onClick=quitarElemento(${libro.id}) ${disabledBtnMenos}>
@@ -166,14 +171,53 @@ function mostrarCarrito(listaLibrosComprar) {
                         <hr>`;
         contenedorLibros.appendChild(div);
         })
+
+        const divUltimo = document.createElement("div");
+        divUltimo.className = "carrito";
+        divUltimo.style = "height: 20px;";
+        divUltimo.innerHTML = `<table style="width: 100%;">
+                            <tbody>
+                                <tr>
+                                    <td style="padding-right: 20px; width: 50%; text-align:right;">
+                                        <br><p style="font-size: 14px;">Total $${totalPrecioCompra}</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>`;
+        contenedorLibros.appendChild(divUltimo);
+
+        datosCC.style="width: 45%; height: 100%; background-color: light-grey; float:left; position: relative; padding-left: 20px; margin-left: 5%; padding-right: 20px;";
+        const divCC = document.createElement("div");
+        divCC.className = "creditCard";
+        divCC.innerHTML = `<div class="form-label"> DATOS TARJETA DE CRÉDITO </div>
+                            <div class="form-floating mb-1">
+                                <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
+                                <label for="floatingInput">Número de tarjeta</label>
+                            </div>
+                            <div class="form-floating mb-1">
+                                <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
+                                <label for="floatingInput">Nombre y apellido</label>
+                            </div>
+                            <div class="form-floating mb-1">
+                                <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
+                                <label for="floatingInput">Fecha de expiración</label>
+                            </div>
+                            <div class="form-floating mb-1">
+                                <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
+                                <label for="floatingInput">Código de seguridad</label>
+                            </div>
+                            <div class="form-floating mb-1">
+                                <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
+                                <label for="floatingInput">DNI del titular de la tarjeta</label>
+                            </div>`;
+        datosCC.appendChild(divCC);
+
         const btnDetalleCompra = document.getElementById("btnDetalleCompra");
         btnDetalleCompra.removeAttribute("hidden");
     }
 
     const btnCarro = document.getElementById("btnCarro");
     btnCarro.innerHTML = "VOLVER";
-
-    
 }
 
 // EVENTO BOTON DETALLE COMPRA
