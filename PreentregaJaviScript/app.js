@@ -48,9 +48,10 @@ fetch("./jsonLibros.json")
 
 function mostrarLibros(librosMostrar) {
     datosCC.replaceChildren();
+    datosCC.setAttribute("hidden", true);
     contenedorLibros.replaceChildren();
     contenedorLibros.style = "width: 100%;";
-    contenedorLibros.className = "album py-5 bg-light";
+    contenedorLibros.className = "album py-5 bg-light card";
     const contenedor = document.createElement("div");
     contenedor.className = "container";
     const row = document.createElement("div");
@@ -81,11 +82,6 @@ function mostrarLibros(librosMostrar) {
 
     const btnCarro = document.getElementById("btnCarro");
     btnCarro.innerHTML = "VER CARRO";
-
-    const btnDetalleCompra = document.getElementById("btnDetalleCompra");
-    btnDetalleCompra.setAttribute("hidden", true);
-    //const btnDesc = document.getElementById("btnDesc");
-    //btnDesc.innerHTML = "OBTENER CODIGO DESCUENTO"
 }
 
 
@@ -100,7 +96,6 @@ btnCarro.onclick = () => {
     const checkFiltro = document.getElementById("divCheckDispo")
     if(btnCarro.innerHTML === "VER CARRO"){
         checkFiltro.replaceChildren();
-        checkFiltro.innerHTML = '<p class="margenIzq">Elementos añadidos al carro: </p>'
         mostrarCarrito(listaLibrosComprar);
     }
     else {
@@ -117,6 +112,7 @@ btnCarro.onclick = () => {
 // CARGO LISTA DE CARRITO CON LIBROS AGREGADOS
 function mostrarCarrito(listaLibrosComprar) {
     datosCC.replaceChildren();
+    datosCC.removeAttribute("hidden")
     contenedorFiltros.replaceChildren();
     contenedorLibros.replaceChildren();
     if(listaLibrosComprar == "") {
@@ -124,9 +120,7 @@ function mostrarCarrito(listaLibrosComprar) {
         div.className = "carrito";
         div.innerHTML = `<h2 class="margenIzq"> Aún no agregó ningún libro al carro </h2>`;
         contenedorLibros.appendChild(div);
-
-        const btnDetalleCompra = document.getElementById("btnDetalleCompra");
-        btnDetalleCompra.setAttribute("hidden", true);
+        datosCC.setAttribute("hidden", true);
     }
     else
     {
@@ -151,19 +145,19 @@ function mostrarCarrito(listaLibrosComprar) {
                                         ${libro.titulo}<br><p style="font-size: 14px;">$${libro.precio}</p>
                                     </td>
                                     <td style="padding-left: 10px; width: 1%;">
+                                        <input class="btn btn-sm btn-outline-secondary" id="btnMenos" type="submit" value="-" style=" width: 35px;" onClick=quitarElemento(${libro.id}) ${disabledBtnMenos}>
+                                    </td>
+                                    <td style="padding-left: 2px; width: 1%;">
+                                        <input type="nummber" value="${libro.stock}" style=" width: 35px; text-align: center;" disabled>
+                                    </td>
+                                    <td style="padding-left: 2px; width: 1%;">
+                                        <input class="btn btn-sm btn-outline-secondary" id="btnMas" type="submit" value="+" style=" width: 35px;" onClick="agregarElemento(${libro.id})" ${disabledBtnMas}>
+                                    </td>
+                                    <td style="padding-left: 10px; width: 10%;">
+                                        <input class="btn btn-sm btn-outline-secondary" type="submit" value="Quitar" onClick="confirmarEliminar(${libro.id})">
+                                    </td>
+                                    <td style="padding-left: 10px; width: 10%;">
                                         $${libro.precio*libro.stock}
-                                    </td>
-                                    <td style="padding-left: 10px; width: 1%;">
-                                        <input id="btnMenos" type="submit" value="-" style=" width: 35px;" onClick=quitarElemento(${libro.id}) ${disabledBtnMenos}>
-                                    </td>
-                                    <td style="padding-left: 2px; width: 1%;">
-                                        <input type="nummber" value="${libro.stock}" style=" width: 35px; text-align: center;">
-                                    </td>
-                                    <td style="padding-left: 2px; width: 1%;">
-                                        <input id="btnMas" type="submit" value="+" style=" width: 35px;" onClick="agregarElemento(${libro.id})" ${disabledBtnMas}>
-                                    </td>
-                                    <td style="padding-left: 10px; width: 1%;">
-                                        <input type="submit" value="Quitar" onClick="confirmarEliminar(${libro.id})">
                                     </td>
                                 </tr>
                             </tbody>
@@ -186,49 +180,70 @@ function mostrarCarrito(listaLibrosComprar) {
                         </table>`;
         contenedorLibros.appendChild(divUltimo);
 
-        datosCC.style="width: 45%; height: 100%; background-color: light-grey; float:left; position: relative; padding-left: 20px; margin-left: 5%; padding-right: 20px;";
+        datosCC.style="width: 45%; height: 100%; float:left; position: relative; padding-left: 20px; margin-left: 5%; padding-right: 20px;";
         const divCC = document.createElement("div");
         divCC.className = "creditCard";
-        divCC.innerHTML = `<div class="form-label"> DATOS TARJETA DE CRÉDITO </div>
-                            <div class="form-floating mb-1">
-                                <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
-                                <label for="floatingInput">Número de tarjeta</label>
-                            </div>
-                            <div class="form-floating mb-1">
-                                <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
-                                <label for="floatingInput">Nombre y apellido</label>
-                            </div>
-                            <div class="form-floating mb-1">
-                                <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
-                                <label for="floatingInput">Fecha de expiración</label>
-                            </div>
-                            <div class="form-floating mb-1">
-                                <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
-                                <label for="floatingInput">Código de seguridad</label>
-                            </div>
-                            <div class="form-floating mb-1">
-                                <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
-                                <label for="floatingInput">DNI del titular de la tarjeta</label>
-                            </div>`;
+        divCC.innerHTML = `<div class="form-label" style="margin-top: 10px;"> DATOS TARJETA DE CRÉDITO </div>
+                            <form class="row g-3" style="margin-bottom: 10px;" onsubmit="return confirmarCompra()">
+                                <div class="col-md-6">
+                                    <label for="validationDefault01" class="form-label">Número de tarjeta</label>
+                                    <input type="text" class="form-control" id="numCC" onkeyup="FromatNumeroCC()" maxlength="19" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="validationDefault02" class="form-label">Nombre y apellido</label>
+                                    <input type="text" class="form-control" id="nomApe"  required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="validationDefault03" class="form-label">Fecha de expiración</label>
+                                    <input type="text" class="form-control" id="expy" onkeyup="FromatExpy()" maxlength="5" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="validationDefault03" class="form-label">Cod de seguridad</label>
+                                    <input type="text" class="form-control" id="codSeg" onkeyup="FromatCodSeg()" maxlength="3" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="validationDefault05" class="form-label">DNI</label>
+                                    <input type="text" class="form-control" id="docDNI" onkeyup="FromatNumeroDNI()"  required>
+                                </div>
+                                <div class="col-12">
+                                    <button class="btn btn-sm btn-outline-secondary" id="btnCompra">COMPRAR</button>
+                                </div>
+                            </form>
+                            `;
         datosCC.appendChild(divCC);
-
-        const btnDetalleCompra = document.getElementById("btnDetalleCompra");
-        btnDetalleCompra.removeAttribute("hidden");
     }
 
     const btnCarro = document.getElementById("btnCarro");
     btnCarro.innerHTML = "VOLVER";
 }
 
-// EVENTO BOTON DETALLE COMPRA
-
-const btnDetalle = document.getElementById("btnDetalleCompra");
-btnDetalle.onclick = () => {
-    detalleDeCompra(listaLibrosComprar)
+function FromatExpy(){
+    let expy = document.getElementById("expy").value;
+    if(expy.length < 3){
+    document.getElementById("expy").value = expy.replace(/\s/g, '')
+                                                    .replace(/\D/g, '')
+                                                    .replace(/([0-9]{2})/g, '$1/');
+    }
 }
 
+function FromatCodSeg(){
+    let codSeg = document.getElementById("codSeg").value;
+    document.getElementById("codSeg").value = codSeg.replace(/\s/g, '')
+                                                    .replace(/\D/g, '');
+}
 
+function FromatNumeroCC(){
+    let numcc = document.getElementById("numCC").value;
+    document.getElementById("numCC").value = numcc.replace(/\s/g, '')
+                                                    .replace(/\D/g, '')
+                                                    .replace(/([0-9]{4})/g, '$1 ').trim();
+}
 
+function FromatNumeroDNI(){
+    let docDNI = document.getElementById("docDNI").value;
+    document.getElementById("docDNI").value = docDNI.replace(/\s/g, '')
+                                                    .replace(/\D/g, '');
+}
 
 // AÑADO LIBRO AL CARRO
 function añadeACarro(id){
@@ -278,6 +293,35 @@ function confirmarEliminar(id) {
     })
 }
 
+function confirmarCompra(){
+    event.preventDefault();
+    Swal.fire({
+        title: `¿Desea confirmar compra?`,
+        icon: "info",
+        confirmButtonText: "Aceptar",
+        showCancelButton: true,
+        cancelButtonText: "Cancelar"
+    }).then((result) => {
+        if(result.isConfirmed) {
+            localStorage.clear();
+            listaLibrosComprar = [];
+            Swal.fire({
+                title: `COMPRA REALIZADA`,
+                icon: "success",
+                timer: 3000,
+                showConfirmButton: false,
+            }).then((result) => {
+                    totalesCarrito = 0;
+                    document.getElementById("cantItems").innerHTML = `Items en el carro: ${totalesCarrito}`;
+                    totalPrecioCompra = 0;
+                    mostrarLibros(listaLibros);
+            })
+        }
+        else return false;
+    })
+}
+
+
 // QUITO LISTA DEL CARRO
 function quitarLista(id){
     const index = listaLibrosComprar.map( libro => libro.id).indexOf(id);
@@ -318,27 +362,6 @@ function agregarElemento(id){
 
     mostrarCarrito(listaLibrosComprar);
 }
-
-
-// Genero el detalle de la compra
-function detalleDeCompra(listaLibrosCompra) {
-    let i=0;
-    let total = 0;
-    let mensajeDetalleCompra = "DETALLE DE COMPRA\n"
-    listaLibrosCompra.forEach(function (libro) {
-    mensajeDetalleCompra += (i+1).toString() + ") "
-    mensajeDetalleCompra += libro.titulo + " - "
-    mensajeDetalleCompra += libro.genero + " - $"
-    mensajeDetalleCompra += libro.precio + " x "
-    mensajeDetalleCompra += libro.stock + "\n"
-    total += Number(libro.precio*libro.stock)
-    i++
-    })
-    mensajeDetalleCompra += "TOTAL $"+total
-    alert(mensajeDetalleCompra)
-}
-
-
 
 //   **********  CARGO BOTONES DE FILTRO      *********
 const contenedorFiltros = document.getElementById("btnsFiltro")
